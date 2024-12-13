@@ -40,6 +40,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'terryma/vim-multiple-cursors'
   " Easy editing
   Plug 'tpope/vim-surround'
+  " Code Companion
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-treesitter/nvim-treesitter'
+  Plug 'olimorris/codecompanion.nvim', { 'branch': 'main' }
 call plug#end()
 "
 " == VIMPLUG END ================================
@@ -142,3 +146,31 @@ let g:vim_jsx_pretty_highlight_close_tag = 1
 let g:vim_jsx_pretty_colorful_config = 1
 
 command! BBlack :py3 Black ()
+
+
+" Code Companion conf
+lua << EOF
+require("codecompanion").setup({
+  adapters = {
+    openai = function()
+      return require("codecompanion.adapters").extend("openai", {
+        env = {
+          api_key = "fake-secre-key", -- Specify the real sk from platform.openai.com
+        },
+        model = "gpt-4",  -- Specify the desired model
+      })
+    end,
+  },
+  strategies = {
+    chat = {
+      adapter = "openai",
+    },
+    inline = {
+      adapter = "openai",
+    },
+    agent = {
+      adapter = "openai",
+    },
+  },
+})
+EOF
